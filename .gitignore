@@ -11,4 +11,5 @@ assets
 docker*
 resources
 silverstripe-cache
+public
 vendor

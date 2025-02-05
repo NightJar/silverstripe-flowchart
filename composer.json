@@ -2,15 +2,18 @@
     "name": "chtombleson/silverstripe-flowchart",
     "description": "Flowchart silverstripe module.",
     "type": "silverstripe-vendormodule",
-    "keywords": ["silverstripe"],
+    "keywords": ["silverstripe", "flowchart"],
     "license": "BSD-3-Clause",
     "require": {
-        "silverstripe/cms": "^4",
-        "silverstripe/framework": "^4"
+        "silverstripe/cms": "^4 | ^5"
     },
     "autoload": {
         "psr-4": {
-            "ChTombleson\\Flowchart\\": "src/",
+            "ChTombleson\\Flowchart\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "ChTombleson\\Flowchart\\Tests\\": "tests/"
         }
     },
@@ -18,8 +21,7 @@
         "expose": [
             "css",
             "js"
-        ],
-        "installer-name": "silverstripe-flowchart"
+        ]
     },
     "scripts": {
         "lint": "phpcs -s src/ tests/",
