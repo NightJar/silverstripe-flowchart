@@ -1,17 +1,19 @@
 <?php
 namespace ChTombleson\Flowchart\Models;
 
+use ChTombleson\Flowchart\Models\Flowchart;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 
-class FlowchartFeedback extends DataObject
+class FlowchartVote extends DataObject
 {
+
     /**
      * @var array
      */
     private static $db = [
-        'IP' => 'Varchar(50)',
-        'Feedback' => 'Text',
+        'Value' => 'Int',
+        'IP' => 'Varchar(50)'
     ];
 
     /**
@@ -26,13 +28,13 @@ class FlowchartFeedback extends DataObject
      */
     private static $summary_fields = [
         'ID',
-        'Feedback'
+        'Value'
     ];
 
     /**
      * @inheritdoc
      */
-    public function canCreate($member = null, $context = array())
+    public function canCreate($member = null, $context = [])
     {
         return false;
     }
@@ -58,6 +60,6 @@ class FlowchartFeedback extends DataObject
      */
     public function canView($member = null)
     {
-        return (Permission::checkMember($member, array('VIEW_FLOWCHART')));
+        return Permission::checkMember($member, ['VIEW_FLOWCHART']);
     }
 }
