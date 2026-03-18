@@ -1,48 +1,37 @@
 <?php
+
 namespace ChTombleson\Flowchart\Models;
 
 use ChTombleson\Flowchart\Models\FlowchartQuestion;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Core\Validation\ValidationResult;
 use SilverStripe\Security\Permission;
 
 class FlowchartResponse extends DataObject
 {
-    /**
-     * @var array
-     */
+    private static $table_name = 'FlowchartResponse';
+
     private static $db = [
         'Label' => 'Varchar(120)', // Yes, No, Maybe
     ];
 
-    /**
-     * @var array
-     */
     private static $has_one = [
         'PreviousQuestion' => FlowchartQuestion::class,
         'NextQuestion' => FlowchartQuestion::class,
     ];
 
-    /**
-     * @var array
-     */
     private static $belongs_many_many = [
         'Questions' => FlowchartQuestion::class
     ];
 
-    /**
-     * @var array
-     */
     private static $summary_fields = [
         'Label' => 'Label',
         'NextQuestionNice' => 'Linked question'
     ];
 
-    /**
-     * @inheritdoc
-     */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
@@ -115,31 +104,22 @@ class FlowchartResponse extends DataObject
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function validate()
+    public function validate(): ValidationResult
     {
         $result = parent::validate();
 
         if (empty($this->Label)) {
-            $result->error('Label is required');
+            $result->addFieldError('Label', 'Label is required');
         }
 
         return $result;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canView($member = null)
     {
         return (Permission::checkMember($member, ['VIEW_FLOWCHART']));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canEdit($member = null)
     {
         return (Permission::checkMember($member, ['VIEW_FLOWCHART']));

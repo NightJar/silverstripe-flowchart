@@ -1,12 +1,13 @@
 <?php
+
 namespace ChTombleson\Flowchart\Controllers;
 
 use ChTombleson\Flowchart\Models\Flowchart;
-use SilverStripe\Control\Controller;
+use ChTombleson\Flowchart\Models\FlowchartFeedback;
 use ChTombleson\Flowchart\Models\FlowchartVote;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Security\SecurityToken;
-use ChTombleson\Flowchart\Models\FlowchartFeedback;
 
 class FlowchartController extends Controller
 {
@@ -24,7 +25,7 @@ class FlowchartController extends Controller
     {
         $request = $this->getRequest();
 
-        $response = new HTTPResponse();
+        $response = HTTPResponse::create();
         $response->addHeader('Content-Type', 'application/json');
 
         if (!$request->isAjax() || !$request->isPost()) {
@@ -40,10 +41,10 @@ class FlowchartController extends Controller
         $feedback = $request->postVar('feedback');
         $ip = $request->getIP();
 
-        $securityToken = new SecurityToken('Flowchart_' . $id);
+        $securityToken = SecurityToken::create('Flowchart_' . $id);
 
         if ($securityToken->check($token)) {
-            $flowchart = Flowchart::get()->filter('ID', $id)->first();
+            $flowchart = Flowchart::get()->byId($id);
 
             if ($flowchart) {
                 if (!empty($feedback)) {

@@ -19,4 +19,14 @@ class FlowchartTest extends SapphireTest
         $this->assertEquals($flowchart->Votes()->count(), 3);
         $this->assertEquals($flowchart->averageVote(), 2);
     }
+
+    public function testRender()
+    {
+        $flowchart = $this->objFromFixture(Flowchart::class, 'Default');
+        $render = Flowchart::shortcodeHandler(['id' => $flowchart->ID]);
+        $this->assertStringContainsString(
+            '<div class="flowchart" data-flowchart-id="' . $flowchart->ID . '">',
+            $render
+        );
+    }
 }

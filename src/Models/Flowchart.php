@@ -1,4 +1,5 @@
 <?php
+
 namespace ChTombleson\Flowchart\Models;
 
 use ChTombleson\Flowchart\Models\FlowchartFeedback;
@@ -11,41 +12,30 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\SecurityToken;
-use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
 
 class Flowchart extends DataObject
 {
-    /**
-     * @var array
-     */
+    private static $table_name = 'Flowchart';
+
     private static $db = [
         'Title' => 'Varchar(100)',
         'VotingDisabled' => 'Boolean',
         'FeedbackDisabled' => 'Boolean',
     ];
 
-    /**
-     * @var array
-     */
     private static $has_many = [
         'Questions' => FlowchartQuestion::class,
         'Feedback' => FlowchartFeedback::class,
         'Votes' => FlowchartVote::class,
     ];
 
-    /**
-     * @var array
-     */
     private static $summary_fields = [
         'Title' => 'Title',
         'Shortcode' => 'Shortcode',
     ];
 
-    /**
-     * @inheritdoc
-     */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
@@ -111,33 +101,21 @@ class Flowchart extends DataObject
         return $fields;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canCreate($member = null, $context = [])
     {
         return Permission::checkMember($member, ['EDIT_FLOWCHART']);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canEdit($member = null)
     {
         return Permission::checkMember($member, ['EDIT_FLOWCHART']);
     }
 
-    /**
-     * @return string
-     */
     public function getShortcode()
     {
         return '[flowchart id="' . $this->ID . '"]';
     }
 
-    /**
-     * @return integer
-     */
     public function averageVote()
     {
         $total = 0;
@@ -154,7 +132,7 @@ class Flowchart extends DataObject
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public static function shortcodeHandler($arguments, $content = null, $parser = null, $shortcode = null, $extra = [])
     {
@@ -176,12 +154,9 @@ class Flowchart extends DataObject
         // Security tokens for form
         $securityToken = new SecurityToken('Flowchart_' . $flowchart->ID);
 
-        return SSViewer::execute_template(
-            'Flowchart',
-            ArrayData::create([
-                'Flowchart' => $flowchart,
-                'SecurityToken' => $securityToken->getValue(),
-            ])
-        );
+        return SSViewer::create('Flowchart')->process([
+            'Flowchart' => $flowchart,
+            'SecurityToken' => $securityToken->getValue(),
+        ]);
     }
 }

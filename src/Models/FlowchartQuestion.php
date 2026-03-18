@@ -1,21 +1,21 @@
 <?php
+
 namespace ChTombleson\Flowchart\Models;
 
 use ChTombleson\Flowchart\Models\Flowchart;
 use ChTombleson\Flowchart\Models\FlowchartResponse;
-use SilverStripe\Assets\Image;
 use SilverStripe\AssetAdmin\Forms\UploadField;
-use SilverStripe\Forms\TextField;
+use SilverStripe\Assets\Image;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 
 class FlowchartQuestion extends DataObject
 {
-    /**
-     * @var array
-     */
+    private static $table_name = 'FlowchartQuestion';
+
     private static $db = [
         'Content' => 'HTMLText',
         'Info' => 'HTMLText',
@@ -25,24 +25,15 @@ class FlowchartQuestion extends DataObject
         'AnswerImageAfterContent' => 'Boolean',
     ];
 
-    /**
-     * @var array
-     */
     private static $has_one = [
         'Flowchart' => Flowchart::class,
         'AnswerImage' => Image::class,
     ];
 
-    /**
-     * @var array
-     */
     private static $many_many = [
         'Responses' => FlowchartResponse::class,
     ];
 
-    /**
-     * @var array
-     */
     private static $summary_fields = [
         'ID' => 'ID',
         'ContentSummary' => 'Question summary',
@@ -52,13 +43,13 @@ class FlowchartQuestion extends DataObject
     ];
 
     /**
+     * Name of folder to save "feature images" into (displayed above answer options by default)
+     *
+     * @see \SilverStripe\Assets\Folder
      * @var string
      */
     private static $flowcharts_asset_folder = 'flowcharts';
 
-    /**
-     * @inheritdoc
-     */
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
@@ -176,20 +167,14 @@ class FlowchartQuestion extends DataObject
      */
     public function FolderName()
     {
-        return self::$flowcharts_asset_folder;
+        return (string)static::config()->get('flowcharts_asset_folder');
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canView($member = null)
     {
         return (Permission::checkMember($member, ['VIEW_FLOWCHART']));
     }
 
-    /**
-     * @inheritdoc
-     */
     public function canEdit($member = null)
     {
         return (Permission::checkMember($member, ['VIEW_FLOWCHART']));
